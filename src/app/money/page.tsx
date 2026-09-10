@@ -87,7 +87,7 @@ export default async function MoneyPage() {
                       <p className="text-ink-3">Balance</p>
                       <p
                         className="mt-0.5 font-mono"
-                        style={{ color: bal > 0 ? "var(--st-hold-fg)" : "var(--st-won-fg)" }}
+                        style={{ color: bal > 0 ? "var(--h-hold)" : "var(--h-won)" }}
                       >
                         {p.dealValue ? pkr(bal) : "—"}
                       </p>
@@ -98,7 +98,7 @@ export default async function MoneyPage() {
                     <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-soft">
                       <div
                         className="h-full rounded-full"
-                        style={{ width: `${pct}%`, background: "var(--st-won-fg)" }}
+                        style={{ width: `${pct}%`, background: "var(--h-won)" }}
                       />
                     </div>
                   )}

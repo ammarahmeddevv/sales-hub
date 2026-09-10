@@ -95,7 +95,7 @@ export default async function ProspectPage({ params }: { params: Promise<{ slug:
                     className="mt-0.5 font-mono"
                     style={{
                       color:
-                        p.dealValue - p.received > 0 ? "var(--st-hold-fg)" : "var(--st-won-fg)",
+                        p.dealValue - p.received > 0 ? "var(--h-hold)" : "var(--h-won)",
                     }}
                   >
                     {p.dealValue ? pkr(Math.max(0, p.dealValue - p.received)) : "—"}

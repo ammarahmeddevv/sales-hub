@@ -23,7 +23,9 @@ export async function GET() {
       })),
       leads: (lR.ok ? lR.data : []).map((l) => ({
         title: l.business,
-        sub: `${l.type} · ${l.city} · ${l.country === "United States" ? "US" : l.country === "Canada" ? "CA" : l.country}`,
+        sub: [l.type, l.city, l.country === "United States" ? "US" : l.country === "Canada" ? "CA" : l.country]
+          .filter(Boolean)
+          .join(" · "),
         href: `/leads?q=${encodeURIComponent(l.business)}`,
         extra: l.phone,
       })),
