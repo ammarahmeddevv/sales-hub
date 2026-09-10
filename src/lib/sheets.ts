@@ -1,5 +1,5 @@
 import { accessToken } from "./google-auth";
-import { canonicalStage, sameProspect, slugify, type Stage } from "./normalize";
+import { canonicalStage, parseMoney, sameProspect, slugify, type Stage } from "./normalize";
 
 /* Everything this app shows comes from two Google Sheets, read at request
    time and cached for a minute. The sheets are the source of truth; nothing
@@ -16,10 +16,10 @@ export const SHEET_URLS = {
 /** Retries dropped connections and 429/5xx — Google occasionally resets
  *  requests, and some networks (Karachi, notably) drop them often. */
 async function readRange(spreadsheetId: string, range: string): Promise<string[][]> {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}?majorDimension=ROWS`;
   let lastError: unknown;
-  for (let attempt = 0; attempt < 4; attempt++) {
-    if (attempt) await new Promise((r) => setTimeout(r, 400 * 2 ** attempt));
+  for (let attempt = 0; attempt < 6; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, Math.min(4000, 500 * 2 ** attempt)));
     try {
       const res = await fetch(url, {
         headers: { authorization: `Bearer ${await accessToken()}` },
@@ -69,6 +69,9 @@ export interface Prospect {
   nextDate: string;
   lastUpdate: string;
   notes: string;
+  dealValue: number;
+  received: number;
+  paymentNote: string;
 }
 
 export interface Activity {
@@ -81,7 +84,7 @@ export interface Activity {
 }
 
 export async function getProspects(): Promise<Prospect[]> {
-  const rows = table(await readRange(TRACKER, "'Prospects'!A1:N500"), 3);
+  const rows = table(await readRange(TRACKER, "'Prospects'!A1:Q500"), 3);
   return rows
     .filter((r) => r["Prospect"])
     .map((r) => ({
@@ -101,12 +104,15 @@ export async function getProspects(): Promise<Prospect[]> {
       nextDate: r["Next step date"],
       lastUpdate: r["Last update"],
       notes: r["Notes"],
+      dealValue: parseMoney(r["Deal value (PKR)"] ?? ""),
+      received: parseMoney(r["Received (PKR)"] ?? ""),
+      paymentNote: r["Payment note"] ?? "",
     }));
 }
 
 export async function getActivity(prospects?: Prospect[]): Promise<Activity[]> {
   const list = prospects ?? (await getProspects());
-  const rows = table(await readRange(TRACKER, "'Activity Log'!A1:E2000"), 3);
+  const rows = table(await readRange(TRACKER, "'Activity Log'!A1:E600"), 3);
   return rows.map((r) => ({
     date: r["Date"],
     prospect: r["Prospect"],
@@ -160,7 +166,7 @@ export interface Funnel {
 }
 
 export async function getLeads(): Promise<Lead[]> {
-  const rows = table(await readRange(LEADFLOW, "'Leads'!A1:Q5000"), 0).filter((r) => r["Business"]);
+  const rows = table(await readRange(LEADFLOW, "'Leads'!A1:Q900"), 0).filter((r) => r["Business"]);
   return rows.map((r) => ({
     id: r["ID"],
     tier: r["Tier"],
@@ -184,7 +190,7 @@ export async function getLeads(): Promise<Lead[]> {
 
 export async function getCalls(): Promise<Call[]> {
   // the sheet pre-fills the Called? checkbox on empty rows, so key off Business
-  const rows = table(await readRange(LEADFLOW, "'Call List'!A1:L5000"), 0).filter((r) => r["Business"]);
+  const rows = table(await readRange(LEADFLOW, "'Call List'!A1:L900"), 0).filter((r) => r["Business"]);
   return rows.map((r) => ({
     id: r["ID"],
     tier: r["Tier"],
@@ -203,9 +209,20 @@ export async function getCalls(): Promise<Call[]> {
 
 /** The funnel row on the LeadFlow Dashboard tab: labels on row 5, numbers on row 6. */
 export async function getFunnel(): Promise<Funnel[]> {
-  const v = await readRange(LEADFLOW, "'Dashboard'!A5:F6");
-  const [labels = [], values = []] = v;
-  return labels.map((label, i) => ({ label, value: Number(values[i]) || 0 }));
+  const v = await readRange(LEADFLOW, "'Dashboard'!A4:F6");
+  // row 4 = "THE FUNNEL", row 5 = labels, row 6 = numbers — but be tolerant of
+  // the header row shifting: use whichever pair of rows has 6 numbers below 6 labels.
+  const rows = v.map((r) => r.map((c) => (c ?? "").trim()));
+  for (let i = 0; i < rows.length - 1; i++) {
+    const labels = rows[i];
+    const nums = rows[i + 1];
+    if (labels.length >= 3 && nums.slice(0, labels.length).every((n) => n === "" || /^\d/.test(n))) {
+      return labels
+        .filter(Boolean)
+        .map((label, j) => ({ label, value: Number(nums[j]) || 0 }));
+    }
+  }
+  return [];
 }
 
 // ---------------------------------------------------------------- helpers

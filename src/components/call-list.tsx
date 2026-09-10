@@ -47,7 +47,7 @@ export function CallList({ calls }: { calls: Call[] }) {
                 setShow(k);
                 setLimit(PAGE);
               }}
-              className={`rounded-lg px-3 py-1.5 ${show === k ? "bg-ink text-white" : "text-ink-2 hover:text-ink"}`}
+              className={`rounded-lg px-3 py-1.5 ${show === k ? "bg-ink text-surface" : "text-ink-2 hover:text-ink"}`}
             >
               {label}
             </button>
@@ -85,7 +85,7 @@ export function CallList({ calls }: { calls: Call[] }) {
                     href={`https://wa.me/${digits}?text=${encodeURIComponent(c.message)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-8 items-center rounded-lg bg-accent px-3 text-[13px] font-medium text-white hover:opacity-90"
+                    className="inline-flex h-8 items-center rounded-lg bg-accent px-3 text-[13px] font-medium text-[var(--on-accent)] hover:opacity-90"
                   >
                     Open in WhatsApp
                   </a>

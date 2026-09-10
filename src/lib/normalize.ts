@@ -68,6 +68,23 @@ export function firstAmount(text: string): number | null {
 
 export const pkr = (n: number) => `Rs ${n.toLocaleString("en-US")}`;
 
+/** A number from a cell that might hold "180,000", "Rs 90k", or "" → 0. */
+export function parseMoney(text: string): number {
+  if (!text) return 0;
+  const m = text.replace(/,/g, "").match(/(\d+(?:\.\d+)?)\s*([km])?/i);
+  if (!m) return 0;
+  const n = Number(m[1]);
+  const mult = m[2]?.toLowerCase() === "k" ? 1000 : m[2]?.toLowerCase() === "m" ? 1_000_000 : 1;
+  return Math.round(n * mult);
+}
+
+/** "Rs 1,80,000" style short label for big money. */
+export function pkrShort(n: number): string {
+  if (n >= 100_000) return `Rs ${(n / 100_000).toFixed(n % 100_000 ? 1 : 0)}L`;
+  if (n >= 1000) return `Rs ${(n / 1000).toFixed(n % 1000 ? 1 : 0)}k`;
+  return `Rs ${n}`;
+}
+
 /** "2026-09-07" → "7 Sep"; anything else is returned untouched. */
 export function shortDate(text: string): string {
   const d = findDate(text);

@@ -2,26 +2,28 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Stage } from "@/lib/normalize";
 
-const STAGE_TONE: Record<Stage, string> = {
-  "Not contacted": "bg-soft text-ink-3",
-  Contacted: "bg-sky-50 text-sky-700",
-  "In discussion": "bg-sky-50 text-sky-700",
-  "Demo done": "bg-accent-soft text-accent",
-  "Proposal sent": "bg-accent-soft text-accent",
-  Negotiating: "bg-accent-soft text-accent",
-  Won: "bg-emerald-50 text-emerald-700",
-  "On hold": "bg-amber-50 text-amber-700",
-  Lost: "bg-soft text-ink-3",
+const STAGE_TONE: Record<Stage, "won" | "active" | "open" | "hold" | "lost"> = {
+  "Not contacted": "lost",
+  Contacted: "open",
+  "In discussion": "open",
+  "Demo done": "active",
+  "Proposal sent": "active",
+  Negotiating: "active",
+  Won: "won",
+  "On hold": "hold",
+  Lost: "lost",
 };
 
 export function StageBadge({ stage, raw }: { stage: Stage; raw?: string }) {
   const showRaw = raw && raw.toLowerCase() !== stage.toLowerCase();
+  const tone = STAGE_TONE[stage];
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-[12px] font-medium ${STAGE_TONE[stage]}`}
+      className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-[12px] font-medium"
+      style={{ background: `var(--st-${tone}-bg)`, color: `var(--st-${tone}-fg)` }}
       title={showRaw ? raw : undefined}
     >
-      <span className="size-1.5 rounded-full bg-current opacity-70" />
+      <span className="size-1.5 rounded-full bg-current opacity-80" />
       {stage}
     </span>
   );
@@ -97,11 +99,14 @@ export function SectionTitle({ children, action }: { children: ReactNode; action
 
 export function ErrorState({ message }: { message: string }) {
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6">
-      <p className="text-[14px] font-medium text-amber-800">
+    <div
+      className="rounded-2xl border p-6"
+      style={{ background: "var(--warn-bg)", borderColor: "var(--warn-line)" }}
+    >
+      <p className="text-[14px] font-medium" style={{ color: "var(--warn-fg)" }}>
         Couldn&apos;t reach Google Sheets
       </p>
-      <p className="mt-1 text-[13px] text-amber-700">
+      <p className="mt-1 text-[13px]" style={{ color: "var(--warn-fg)" }}>
         Nothing is shown rather than out-of-date data. {message}
       </p>
     </div>

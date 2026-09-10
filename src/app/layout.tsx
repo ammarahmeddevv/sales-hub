@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/nav";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Wordmark } from "@/components/wordmark";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -12,12 +14,23 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
+// runs before first paint so the theme never flashes
+const themeScript = `(function(){try{var t=localStorage.getItem('hub-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark';}catch(e){}})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <Nav />
-        <main className="min-h-screen px-5 pb-28 pt-8 sm:px-8 lg:pb-12 lg:pl-[calc(15rem+2.5rem)] lg:pr-10 lg:pt-10">
+        {/* mobile top bar */}
+        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-canvas/90 px-5 py-2.5 backdrop-blur lg:hidden">
+          <Wordmark />
+          <ThemeToggle />
+        </div>
+        <main className="min-h-screen px-5 pb-28 pt-6 sm:px-8 lg:pb-12 lg:pl-[calc(15rem+2.5rem)] lg:pr-10 lg:pt-10">
           <div className="mx-auto max-w-6xl">{children}</div>
         </main>
       </body>

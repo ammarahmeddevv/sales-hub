@@ -1,18 +1,94 @@
 @import "tailwindcss";
 
-@theme {
-  --color-canvas: #f5f6f8;
-  --color-surface: #ffffff;
-  --color-soft: #f2f4f7;
-  --color-line: #e4e7ec;
-  --color-ink: #101828;
-  --color-ink-2: #475467;
-  --color-ink-3: #98a2b3;
-  --color-accent: #0f766e;
-  --color-accent-soft: #e6f4f1;
+/* ------------------------------------------------------------------ *
+ *  Two themes, one set of semantic tokens.
+ *  Warm-light is the default; [data-theme="dark"] swaps the values.
+ * ------------------------------------------------------------------ */
+:root {
+  --canvas: #f6f5f1;
+  --surface: #ffffff;
+  --soft: #eeece5;
+  --line: #e4e1d8;
+  --line-soft: #edeae2;
+
+  --ink: #1c1a17;
+  --ink-2: #5b564d;
+  --ink-3: #948f86;
+
+  --accent: #0f766e;
+  --accent-2: #0b5c56;
+  --accent-soft: #e3efed;
+  --on-accent: #ffffff;
+
+  --danger: #b42318;
+  --warn-fg: #92400e;
+  --warn-bg: #fdf3e4;
+  --warn-line: #f2ddba;
+
+  /* deal / stage tones — bg + fg pairs so both themes stay legible */
+  --st-won-bg: #e7f2e3;
+  --st-won-fg: #2f6d31;
+  --st-active-bg: #e3efed;
+  --st-active-fg: #0f6b63;
+  --st-open-bg: #e8eef7;
+  --st-open-fg: #345591;
+  --st-hold-bg: #fbeede;
+  --st-hold-fg: #9a5a17;
+  --st-lost-bg: #edece8;
+  --st-lost-fg: #7c766a;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --canvas: #0f1216;
+  --surface: #161a20;
+  --soft: #1d2129;
+  --line: #272d37;
+  --line-soft: #20252e;
+
+  --ink: #e8eaee;
+  --ink-2: #9aa1ac;
+  --ink-3: #6a717c;
+
+  --accent: #2dd4bf;
+  --accent-2: #5eead4;
+  --accent-soft: #12302d;
+  --on-accent: #06201d;
+
+  --danger: #f87171;
+  --warn-fg: #fbbf24;
+  --warn-bg: #241c0e;
+  --warn-line: #3d310f;
+
+  --st-won-bg: #10281a;
+  --st-won-fg: #6ee7a8;
+  --st-active-bg: #0f302d;
+  --st-active-fg: #5eead4;
+  --st-open-bg: #16233b;
+  --st-open-fg: #94b4ec;
+  --st-hold-bg: #33240f;
+  --st-hold-fg: #fbbf24;
+  --st-lost-bg: #22262e;
+  --st-lost-fg: #949aa4;
+
+  color-scheme: dark;
 }
 
 @theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-soft: var(--soft);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
@@ -22,18 +98,18 @@ html {
 }
 
 body {
-  background: var(--color-canvas);
-  color: var(--color-ink);
+  background: var(--canvas);
+  color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 6px;
 }
 
 ::selection {
-  background: var(--color-accent-soft);
+  background: var(--accent-soft);
 }

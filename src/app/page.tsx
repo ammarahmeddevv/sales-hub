@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getActivity, getFunnel, getProspects, safe } from "@/lib/sheets";
-import { CLOSED, findDate, firstAmount, pkr, shortDate } from "@/lib/normalize";
+import { CLOSED, findDate, pkr, pkrShort, shortDate } from "@/lib/normalize";
 import { ActivityFeed } from "@/components/activity-feed";
 import { Card, ErrorState, PageHeader, SectionTitle, Stat, StageBadge } from "@/components/ui";
 
@@ -27,7 +27,11 @@ export default async function Overview() {
   const prospects = prospectsR.data;
   const open = prospects.filter((p) => !CLOSED.includes(p.stage));
   const won = prospects.filter((p) => p.stage === "Won");
-  const quoted = open.reduce((sum, p) => sum + (firstAmount(p.price) ?? 0), 0);
+  const collected = prospects.reduce((s, p) => s + p.received, 0);
+  const outstanding = prospects
+    .filter((p) => p.stage !== "Lost")
+    .reduce((s, p) => s + Math.max(0, p.dealValue - p.received), 0);
+  const pipelineValue = open.reduce((s, p) => s + p.dealValue, 0);
   const funnel = funnelR.ok ? funnelR.data : [];
   const f = (label: string) => funnel.find((x) => x.label.toLowerCase().startsWith(label))?.value ?? 0;
 
@@ -48,10 +52,27 @@ export default async function Overview() {
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat label="Open deals" value={open.length} hint={`${prospects.length} prospects in total`} />
-        <Stat label="Quoted in open deals" value={quoted ? pkr(quoted) : "—"} hint="first figure of each quote" />
         <Stat label="Won" value={won.length} hint={won.length ? won.map((w) => w.name).join(", ") : "first win pending"} />
         <Stat label="Cold leads" value={f("qualified")} hint={`${f("called")} contacted · ${f("interested")} interested`} />
+        <Stat label="On call list" value={f("on call list") || f("qualified")} hint="ready to reach out to" />
       </div>
+
+      <Link
+        href="/money"
+        className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-ink-3/50"
+      >
+        <span className="text-[13px] font-semibold text-ink">Money</span>
+        <span className="text-[13px] text-ink-2">
+          Collected <span className="font-mono text-ink">{pkrShort(collected)}</span>
+        </span>
+        <span className="text-[13px] text-ink-2">
+          Outstanding <span className="font-mono text-ink">{pkrShort(outstanding)}</span>
+        </span>
+        <span className="text-[13px] text-ink-2">
+          Open pipeline <span className="font-mono text-ink">{pkrShort(pipelineValue)}</span>
+        </span>
+        <span className="ml-auto text-[13px] text-accent">Details →</span>
+      </Link>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <section className="min-w-0">
@@ -73,7 +94,7 @@ export default async function Overview() {
                     <StageBadge stage={p.stage} raw={p.stageRaw} />
                   </div>
                   <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{p.nextStep}</p>
-                  <p className={`mt-2 text-[12.5px] font-medium ${overdue ? "text-red-600" : "text-ink-3"}`}>
+                  <p className={`mt-2 text-[12.5px] font-medium ${overdue ? "text-danger" : "text-ink-3"}`}>
                     {d ? `${overdue ? "Overdue · " : ""}${shortDate(p.nextDate)}` : p.nextDate || "No date set"}
                   </p>
                 </Card>

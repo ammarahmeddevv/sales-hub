@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getActivity, getProspects, SHEET_URLS } from "@/lib/sheets";
-import { shortDate } from "@/lib/normalize";
+import { pkr, shortDate } from "@/lib/normalize";
 import { ActivityFeed } from "@/components/activity-feed";
 import { Card, SectionTitle, StageBadge } from "@/components/ui";
 
@@ -68,6 +68,33 @@ export default async function ProspectPage({ params }: { params: Promise<{ slug:
               <Field label="What I'm offering">{p.offering}</Field>
               <Field label="Price quoted (PKR)">{p.price}</Field>
             </dl>
+            {(p.dealValue > 0 || p.received > 0) && (
+              <div className="mt-5 grid grid-cols-3 gap-3 border-t border-line pt-4 text-[13px]">
+                <div>
+                  <p className="text-ink-3">Deal value</p>
+                  <p className="mt-0.5 font-mono text-ink">{p.dealValue ? pkr(p.dealValue) : "—"}</p>
+                </div>
+                <div>
+                  <p className="text-ink-3">Received</p>
+                  <p className="mt-0.5 font-mono text-ink">{pkr(p.received)}</p>
+                </div>
+                <div>
+                  <p className="text-ink-3">Balance</p>
+                  <p
+                    className="mt-0.5 font-mono"
+                    style={{
+                      color:
+                        p.dealValue - p.received > 0 ? "var(--st-hold-fg)" : "var(--st-won-fg)",
+                    }}
+                  >
+                    {p.dealValue ? pkr(Math.max(0, p.dealValue - p.received)) : "—"}
+                  </p>
+                </div>
+                {p.paymentNote && (
+                  <p className="col-span-3 text-[12.5px] text-ink-2">{p.paymentNote}</p>
+                )}
+              </div>
+            )}
           </Card>
 
           <Card className="p-6">
@@ -102,7 +129,7 @@ export default async function ProspectPage({ params }: { params: Promise<{ slug:
                     <a href={`tel:+${n.intl}`} className="rounded-lg border border-line bg-surface px-2.5 py-1 text-[12.5px] text-ink hover:bg-canvas">
                       Call
                     </a>
-                    <a href={`https://wa.me/${n.intl}`} target="_blank" rel="noreferrer" className="rounded-lg bg-accent px-2.5 py-1 text-[12.5px] text-white hover:opacity-90">
+                    <a href={`https://wa.me/${n.intl}`} target="_blank" rel="noreferrer" className="rounded-lg bg-accent px-2.5 py-1 text-[12.5px] text-[var(--on-accent)] hover:opacity-90">
                       WhatsApp
                     </a>
                   </div>

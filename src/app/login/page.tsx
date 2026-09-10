@@ -20,8 +20,8 @@ export default async function Login({
           className="h-11 w-full rounded-xl border border-line px-3.5 text-[14px]"
           aria-label="Password"
         />
-        {e && <p className="text-[13px] text-red-600">That password isn&apos;t right.</p>}
-        <button type="submit" className="h-11 w-full rounded-xl bg-ink text-[14px] font-medium text-white">
+        {e && <p className="text-[13px] text-danger">That password isn&apos;t right.</p>}
+        <button type="submit" className="h-11 w-full rounded-xl bg-ink text-[14px] font-medium text-surface">
           Continue
         </button>
       </form>

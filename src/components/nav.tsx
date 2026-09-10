@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "./theme-toggle";
+import { Wordmark } from "./wordmark";
 
 const ITEMS = [
-  { href: "/", label: "Overview", d: "M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10" },
-  { href: "/pipeline", label: "Pipeline", d: "M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v5h-4z" },
-  { href: "/activity", label: "Activity", d: "M3 12h4l3-8 4 16 3-8h4" },
-  { href: "/leads", label: "Leads", d: "M4 6h16M4 12h16M4 18h10" },
-  { href: "/calls", label: "Call list", d: "M4 5h16v11H8l-4 4z" },
+  { href: "/", label: "Overview", d: "M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10", bar: true },
+  { href: "/pipeline", label: "Pipeline", d: "M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v5h-4z", bar: true },
+  { href: "/money", label: "Money", d: "M3 6h18v12H3zM3 10h18M7 15h3", bar: true },
+  { href: "/activity", label: "Activity", d: "M3 12h4l3-8 4 16 3-8h4", bar: false },
+  { href: "/leads", label: "Leads", d: "M4 6h16M4 12h16M4 18h10", bar: true },
+  { href: "/calls", label: "Call list", d: "M4 5h16v11H8l-4 4z", bar: true },
 ];
 
 function Icon({ d }: { d: string }) {
@@ -22,20 +25,16 @@ function Icon({ d }: { d: string }) {
 export function Nav() {
   const path = usePathname();
   const active = (href: string) =>
-    href === "/" ? path === "/" : path.startsWith(href) || (href === "/pipeline" && path.startsWith("/prospects"));
+    href === "/"
+      ? path === "/"
+      : path.startsWith(href) || (href === "/pipeline" && path.startsWith("/prospects"));
 
   return (
     <>
       {/* desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-line bg-surface px-4 py-6 lg:flex">
-        <Link href="/" className="mb-8 flex items-center gap-2.5 px-2">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-ink text-[13px] font-semibold text-white">
-            AA
-          </span>
-          <span>
-            <span className="block text-[14px] font-semibold leading-tight text-ink">Sales Hub</span>
-            <span className="block text-[12px] leading-tight text-ink-3">Ammar Ahmed</span>
-          </span>
+        <Link href="/" className="mb-8 px-2">
+          <Wordmark />
         </Link>
         <nav className="space-y-0.5">
           {ITEMS.map((it) => (
@@ -51,11 +50,15 @@ export function Nav() {
             </Link>
           ))}
         </nav>
+        <div className="mt-auto flex items-center justify-between px-2 pt-4">
+          <span className="text-[12px] text-ink-3">Theme</span>
+          <ThemeToggle />
+        </div>
       </aside>
 
       {/* mobile bottom bar */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        {ITEMS.map((it) => (
+        {ITEMS.filter((it) => it.bar).map((it) => (
           <Link
             key={it.href}
             href={it.href}
