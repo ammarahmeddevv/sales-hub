@@ -25,15 +25,21 @@ export function ActivityFeed({
   items: Activity[];
   showProspect?: boolean;
 }) {
+  // newest first; undated items sink to the bottom so the day headers stay in order
+  const ordered = [...items].sort((a, b) => {
+    const da = findDate(a.date)?.getTime() ?? -Infinity;
+    const db = findDate(b.date)?.getTime() ?? -Infinity;
+    return db - da;
+  });
   let lastBucket = "";
 
   return (
     <ol className="relative [overflow-wrap:anywhere]">
-      {items.map((a, i) => {
+      {ordered.map((a, i) => {
         const b = bucket(a.date);
         const newGroup = b !== lastBucket;
         lastBucket = b;
-        const last = i === items.length - 1;
+        const last = i === ordered.length - 1;
         return (
           <li key={i} className="relative">
             {newGroup && (
