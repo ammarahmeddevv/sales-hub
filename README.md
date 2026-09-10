@@ -18,9 +18,9 @@ Sheets and laid out so it's easy to scan on a laptop or a phone.
   running from first contact through to won.
 - **Money** — collected, outstanding, open-pipeline value and win rate, then
   per-deal value / received / balance with a progress bar.
-- **Prospect page** — the offer, the price, payment status, scheduled
-  meetings, logged emails and messages, full history, and one-tap Call /
-  WhatsApp for each contact.
+- **Prospect page** — a stage progress track, the offer, the price, payment
+  status, scheduled meetings, logged emails and messages, full history, and
+  one-tap Call / WhatsApp for each contact.
 - **Activity** — every call, message and meeting, newest first.
 - **Leads** — the 500+ businesses LeadFlow found without a working website,
   searchable and filterable by country and trade.
@@ -28,6 +28,8 @@ Sheets and laid out so it's easy to scan on a laptop or a phone.
   Open-in-WhatsApp buttons.
 - **Light and dark themes**, with a toggle that remembers your choice, and a
   stage colour spectrum that runs through both.
+- **Installable** — add it to a phone home screen and it opens full-screen
+  with its own icon, no browser chrome.
 
 ## How it works
 
