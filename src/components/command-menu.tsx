@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar } from "./ui";
 
-type Item = { title: string; sub: string; href: string; extra?: string };
+type Item = { title: string; sub: string; href: string; extra?: string; avatar?: string };
 type Index = { prospects: Item[]; leads: Item[]; calls: Item[]; activity: Item[] };
 const GROUPS: (keyof Index)[] = ["prospects", "leads", "activity", "calls"];
 const LABELS: Record<keyof Index, string> = {
@@ -226,7 +226,7 @@ export function CommandMenu({ variant = "sidebar" }: { variant?: "sidebar" | "ba
                             active ? "bg-accent-soft" : "hover:bg-soft"
                           }`}
                         >
-                          <Avatar name={r.item.title} size={26} />
+                          <Avatar name={r.item.avatar || r.item.title} size={26} />
                           <span className="flex min-w-0 flex-col gap-0.5">
                             <span className={`truncate text-[13.5px] ${active ? "text-accent" : "text-ink"}`}>
                               {r.item.title}

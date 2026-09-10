@@ -36,8 +36,9 @@ export async function GET() {
       })),
       activity: (aR.ok ? aR.data : []).slice(0, 60).map((a) => ({
         title: a.what.slice(0, 80),
-        sub: `${a.prospect} · ${shortDate(a.date)}`,
+        sub: `${a.channel} · ${a.prospect} · ${shortDate(a.date)}`,
         href: a.prospectSlug ? `/prospects/${a.prospectSlug}` : "/activity",
+        avatar: a.prospect,
       })),
     },
     { headers: { "cache-control": "private, max-age=30" } },
