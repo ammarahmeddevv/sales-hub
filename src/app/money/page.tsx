@@ -39,9 +39,9 @@ export default async function MoneyPage() {
       />
 
       <div className="rise grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat hue="won" label="Collected" value={<CountUp value={collected} format={pkr} />} hint="received across all deals" />
-        <Stat hue="hold" label="Outstanding" value={<CountUp value={outstanding} format={pkr} />} hint="agreed but not yet paid" />
-        <Stat hue="discussion" label="Open pipeline" value={<CountUp value={pipeline} format={pkr} />} hint="deal value of live deals" />
+        <Stat hue="won" label="Collected" value={<CountUp value={collected} prefix="Rs " />} hint="received across all deals" />
+        <Stat hue="hold" label="Outstanding" value={<CountUp value={outstanding} prefix="Rs " />} hint="agreed but not yet paid" />
+        <Stat hue="discussion" label="Open pipeline" value={<CountUp value={pipeline} prefix="Rs " />} hint="deal value of live deals" />
         <Stat
           hue="proposal"
           label="Win rate"

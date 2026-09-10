@@ -2,14 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/** Counts once from 0 to `value` on mount. Respects reduced-motion. */
+/** Counts once from 0 to `value` on mount, then shows `prefix + value + suffix`
+ *  with a thousands-separated number. Respects reduced-motion. */
 export function CountUp({
   value,
-  format = (n) => String(n),
+  prefix = "",
+  suffix = "",
   duration = 750,
 }: {
   value: number;
-  format?: (n: number) => string;
+  prefix?: string;
+  suffix?: string;
   duration?: number;
 }) {
   const [n, setN] = useState(value);
@@ -39,5 +42,11 @@ export function CountUp({
     return () => cancelAnimationFrame(raf);
   }, [value, duration]);
 
-  return <>{format(n)}</>;
+  return (
+    <>
+      {prefix}
+      {n.toLocaleString("en-US")}
+      {suffix}
+    </>
+  );
 }

@@ -61,8 +61,8 @@ export default async function Overview() {
       <div className="rise grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat hue="contacted" label="Open deals" value={<CountUp value={open.length} />} hint={`${prospects.length} prospects in total`} />
         <Stat hue="won" label="Won" value={<CountUp value={won.length} />} hint={won.length ? won.map((w) => w.name).join(", ") : "first win pending"} />
-        <Stat hue="proposal" label="Cold leads" value={<CountUp value={f("qualified")} format={(n) => n.toLocaleString("en-US")} />} hint={`${f("called")} contacted · ${f("interested")} interested`} />
-        <Stat hue="demo" label="On call list" value={<CountUp value={f("on call list") || f("qualified")} format={(n) => n.toLocaleString("en-US")} />} hint="ready to reach out to" />
+        <Stat hue="proposal" label="Cold leads" value={<CountUp value={f("qualified")} />} hint={`${f("called")} contacted · ${f("interested")} interested`} />
+        <Stat hue="demo" label="On call list" value={<CountUp value={f("on call list") || f("qualified")} />} hint="ready to reach out to" />
       </div>
 
       <Link
