@@ -1,56 +1,62 @@
 # Sales Hub
 
 My sales operation in one place. Every prospect I'm talking to, every call and
-message, and the cold-lead pipeline from [LeadFlow](https://github.com/ammarahmeddevv/leadflow)
-— read live from Google Sheets and laid out so it's easy to scan on a laptop or
-a phone.
+message, the money in and owed, and the cold-lead pipeline from
+[LeadFlow](https://github.com/ammarahmeddevv/leadflow) — read live from Google
+Sheets and laid out so it's easy to scan on a laptop or a phone.
 
 ![Overview](docs/screenshots/hub-01-overview.png)
 
 ## What's in it
 
-- **Overview** — open deals, what's quoted, wins, and the cold-lead funnel;
-  the next step on every open deal, sorted by date, with overdue ones flagged;
-  the latest activity.
-- **Pipeline** — a board of every prospect by stage.
-- **Prospect pages** — the offer, the price, notes, one-tap Call and WhatsApp
-  for each contact, and that prospect's full history.
-- **Activity** — every call, message, meeting and build, newest first.
+- **Overview** — open deals, a money strip, the cold-lead funnel, and every
+  open deal's next step sorted by date (overdue in red), plus recent activity.
+- **Pipeline** — every prospect on a board, grouped by stage.
+- **Money** — collected, outstanding, open-pipeline value and win rate, then
+  per-deal value / received / balance with a progress bar.
+- **Prospect page** — the offer, the price, payment status, notes, full
+  history, and one-tap Call / WhatsApp for each contact.
+- **Activity** — every call, message and meeting, newest first.
 - **Leads** — the 500+ businesses LeadFlow found without a working website,
   searchable and filterable by country and trade.
-- **Call list** — each lead's first message, already written to suit the size
-  of the business, with Copy and Open-in-WhatsApp buttons.
+- **Call list** — each lead's ready-written first message, with Copy and
+  Open-in-WhatsApp buttons.
+- **Light and dark themes**, with a toggle that remembers your choice.
 
 ## How it works
 
-The Google Sheets are the source of truth — the Sales Tracker (prospects and
-activity log) and the LeadFlow lead database. This app has no database of its
-own: pages read the sheets server-side with a read-only Google service account
-and refresh every 60 seconds, so a change in the sheet shows up here within a
-minute.
+The Google Sheets are the source of truth — the Sales Tracker (prospects,
+activity log, deal values) and the LeadFlow lead database. This app keeps no
+database of its own: pages read the sheets server-side with a read-only Google
+service account and refresh every 60 seconds, so a change in the sheet shows up
+here within a minute.
 
 - Rows are mapped by column header, not position, so reordering columns in the
   sheet doesn't break anything.
-- Free-text stages ("Likely lost — no reply") are mapped onto a fixed set so
-  they can be grouped and coloured; the original wording is kept.
+- Free-text stages ("Likely lost — no reply") are mapped onto a fixed set for
+  grouping and colour; the original wording is kept.
 - Requests to Google are retried on dropped connections. If the sheets can't be
   reached, pages say so instead of showing stale numbers.
-- Kept out of search engines (`noindex` and a disallow-all `robots.txt`). An
+- Kept out of search engines (`noindex` + a disallow-all `robots.txt`). An
   optional password gate switches on when `HUB_PASSWORD` is set.
 
 ## Screenshots
 
-| Pipeline | Prospect |
+| Money | Pipeline |
 | --- | --- |
-| ![Pipeline](docs/screenshots/hub-02-pipeline.png) | ![Prospect](docs/screenshots/hub-03-prospect.png) |
+| ![Money](docs/screenshots/hub-07-money.png) | ![Pipeline](docs/screenshots/hub-02-pipeline.png) |
 
-| Activity | Leads |
+| Prospect | Activity |
 | --- | --- |
-| ![Activity](docs/screenshots/hub-04-activity.png) | ![Leads](docs/screenshots/hub-05-leads.png) |
+| ![Prospect](docs/screenshots/hub-03-prospect.png) | ![Activity](docs/screenshots/hub-04-activity.png) |
 
-| Call list | Mobile |
+| Leads | Call list |
 | --- | --- |
-| ![Call list](docs/screenshots/hub-06-calls.png) | <img src="docs/screenshots/hub-07-mobile-overview.png" width="240" alt="Mobile overview"> |
+| ![Leads](docs/screenshots/hub-05-leads.png) | ![Call list](docs/screenshots/hub-06-calls.png) |
+
+| Dark theme | Mobile |
+| --- | --- |
+| ![Dark](docs/screenshots/hub-08-overview-dark.png) | <img src="docs/screenshots/hub-10-mobile.png" width="240" alt="Mobile"> |
 
 ## Stack
 
