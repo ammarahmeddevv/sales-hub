@@ -129,7 +129,7 @@ export default async function Overview() {
           </SectionTitle>
           <Card className="p-5">
             {activityR.ok ? (
-              <ActivityFeed items={activityR.data.slice(0, 6)} />
+              <ActivityFeed items={activityR.data.slice(0, 5)} />
             ) : (
               <p className="text-[14px] text-ink-3">{activityR.error}</p>
             )}

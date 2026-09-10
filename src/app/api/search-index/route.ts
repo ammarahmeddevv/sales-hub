@@ -31,7 +31,7 @@ export async function GET() {
       })),
       calls: (cR.ok ? cR.data : []).map((c) => ({
         title: c.business,
-        sub: `Call list · ${c.city}`,
+        sub: ["Call list", c.city].filter(Boolean).join(" · "),
         href: `/calls?q=${encodeURIComponent(c.business)}`,
       })),
       activity: (aR.ok ? aR.data : []).slice(0, 60).map((a) => ({
