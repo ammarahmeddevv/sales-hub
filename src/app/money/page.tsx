@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getProspects, safe } from "@/lib/sheets";
 import { pkr } from "@/lib/normalize";
-import { CountUp } from "@/components/count-up";
 import { Avatar, Card, ErrorState, PageHeader, Stat, StageBadge, Empty } from "@/components/ui";
 
 export const revalidate = 60;
@@ -39,9 +38,9 @@ export default async function MoneyPage() {
       />
 
       <div className="rise grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat hue="won" label="Collected" value={<CountUp value={collected} prefix="Rs " />} hint="received across all deals" />
-        <Stat hue="hold" label="Outstanding" value={<CountUp value={outstanding} prefix="Rs " />} hint="agreed but not yet paid" />
-        <Stat hue="discussion" label="Open pipeline" value={<CountUp value={pipeline} prefix="Rs " />} hint="deal value of live deals" />
+        <Stat hue="won" label="Collected" value={pkr(collected)} hint="received across all deals" />
+        <Stat hue="hold" label="Outstanding" value={pkr(outstanding)} hint="agreed but not yet paid" />
+        <Stat hue="discussion" label="Open pipeline" value={pkr(pipeline)} hint="deal value of live deals" />
         <Stat
           hue="proposal"
           label="Win rate"
