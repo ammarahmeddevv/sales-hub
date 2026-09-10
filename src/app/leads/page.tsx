@@ -5,8 +5,12 @@ import { ErrorState, PageHeader } from "@/components/ui";
 export const revalidate = 60;
 export const metadata = { title: "Leads" };
 
-export default async function LeadsPage() {
-  const r = await safe(getLeads);
+export default async function LeadsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const [{ q }, r] = await Promise.all([searchParams, safe(getLeads)]);
   return (
     <>
       <PageHeader
@@ -18,7 +22,7 @@ export default async function LeadsPage() {
           </a>
         }
       />
-      {r.ok ? <LeadsTable leads={r.data} /> : <ErrorState message={r.error} />}
+      {r.ok ? <LeadsTable leads={r.data} initialQ={q ?? ""} /> : <ErrorState message={r.error} />}
     </>
   );
 }

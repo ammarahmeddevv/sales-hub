@@ -3,74 +3,86 @@
 /* ------------------------------------------------------------------ *
  *  Two themes, one set of semantic tokens.
  *  Warm-light is the default; [data-theme="dark"] swaps the values.
+ *  Stage hues form a deliberate spectrum: sky → blue → indigo → violet
+ *  → magenta as a deal advances, emerald at Won, amber on hold.
  * ------------------------------------------------------------------ */
 :root {
-  --canvas: #f6f5f1;
+  --canvas: #faf8f3;
   --surface: #ffffff;
-  --soft: #eeece5;
-  --line: #e4e1d8;
-  --line-soft: #edeae2;
+  --raised: #fbfaf6;
+  --soft: #f1efe7;
+  --line: #e6e2d7;
+  --line-soft: #efece3;
 
-  --ink: #1c1a17;
-  --ink-2: #5b564d;
-  --ink-3: #948f86;
+  --ink: #191712;
+  --ink-2: #5a544a;
+  --ink-3: #938c7e;
 
-  --accent: #0f766e;
-  --accent-2: #0b5c56;
-  --accent-soft: #e3efed;
+  --accent: #0e766c;
+  --accent-2: #14958a;
+  --accent-soft: #e0efec;
   --on-accent: #ffffff;
 
   --danger: #b42318;
-  --warn-fg: #92400e;
-  --warn-bg: #fdf3e4;
-  --warn-line: #f2ddba;
 
-  /* deal / stage tones — bg + fg pairs so both themes stay legible */
-  --st-won-bg: #e7f2e3;
-  --st-won-fg: #2f6d31;
-  --st-active-bg: #e3efed;
-  --st-active-fg: #0f6b63;
-  --st-open-bg: #e8eef7;
-  --st-open-fg: #345591;
-  --st-hold-bg: #fbeede;
-  --st-hold-fg: #9a5a17;
-  --st-lost-bg: #edece8;
-  --st-lost-fg: #7c766a;
+  --warn-fg: #92400e;
+  --warn-bg: #fdf4e6;
+  --warn-line: #f1dcb7;
+
+  /* stage / pipeline spectrum */
+  --h-notcontacted: #6b7280;
+  --h-contacted: #0284c7;
+  --h-discussion: #2563eb;
+  --h-demo: #4f46e5;
+  --h-proposal: #7c3aed;
+  --h-negotiating: #b02597;
+  --h-won: #06996b;
+  --h-hold: #bd620c;
+  --h-lost: #9c5b64;
+
+  --shadow-card: 0 1px 2px rgba(25, 23, 18, 0.04), 0 10px 30px -14px rgba(25, 23, 18, 0.1);
+  --shadow-pop: 0 8px 40px -8px rgba(25, 23, 18, 0.22);
+  --glow: radial-gradient(60% 120% at 15% 0%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%);
 
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --canvas: #0f1216;
-  --surface: #161a20;
-  --soft: #1d2129;
-  --line: #272d37;
-  --line-soft: #20252e;
+  --canvas: #0b0e13;
+  --surface: #14181f;
+  --raised: #1a1f28;
+  --soft: #1c222b;
+  --line: #29303b;
+  --line-soft: #222834;
 
-  --ink: #e8eaee;
-  --ink-2: #9aa1ac;
-  --ink-3: #6a717c;
+  --ink: #e9ebef;
+  --ink-2: #99a1ad;
+  --ink-3: #69717d;
 
   --accent: #2dd4bf;
   --accent-2: #5eead4;
-  --accent-soft: #12302d;
-  --on-accent: #06201d;
+  --accent-soft: #133330;
+  --on-accent: #04211e;
 
   --danger: #f87171;
-  --warn-fg: #fbbf24;
-  --warn-bg: #241c0e;
-  --warn-line: #3d310f;
 
-  --st-won-bg: #10281a;
-  --st-won-fg: #6ee7a8;
-  --st-active-bg: #0f302d;
-  --st-active-fg: #5eead4;
-  --st-open-bg: #16233b;
-  --st-open-fg: #94b4ec;
-  --st-hold-bg: #33240f;
-  --st-hold-fg: #fbbf24;
-  --st-lost-bg: #22262e;
-  --st-lost-fg: #949aa4;
+  --warn-fg: #fcc35a;
+  --warn-bg: #241b0d;
+  --warn-line: #3d3010;
+
+  --h-notcontacted: #9aa2ae;
+  --h-contacted: #38bdf8;
+  --h-discussion: #60a5fa;
+  --h-demo: #8b93f8;
+  --h-proposal: #a78bfa;
+  --h-negotiating: #ec7ad0;
+  --h-won: #34d399;
+  --h-hold: #fb923c;
+  --h-lost: #d29aa3;
+
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.02), 0 12px 32px -18px rgba(0, 0, 0, 0.6);
+  --shadow-pop: 0 20px 60px -12px rgba(0, 0, 0, 0.7);
+  --glow: radial-gradient(60% 120% at 15% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 65%);
 
   color-scheme: dark;
 }
@@ -78,6 +90,7 @@
 @theme inline {
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);
+  --color-raised: var(--raised);
   --color-soft: var(--soft);
   --color-line: var(--line);
   --color-line-soft: var(--line-soft);
@@ -111,5 +124,27 @@ body {
 }
 
 ::selection {
-  background: var(--accent-soft);
+  background: color-mix(in oklab, var(--accent) 26%, transparent);
+}
+
+/* utilities ------------------------------------------------------- */
+.card {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.spectrum-rail {
+  background: linear-gradient(
+    90deg,
+    var(--h-contacted),
+    var(--h-discussion),
+    var(--h-demo),
+    var(--h-proposal),
+    var(--h-negotiating),
+    var(--h-won)
+  );
 }

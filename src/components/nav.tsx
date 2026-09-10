@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
 import { Wordmark } from "./wordmark";
+import { CommandMenu } from "./command-menu";
 
 const ITEMS = [
   { href: "/", label: "Overview", d: "M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10", bar: true },
@@ -33,9 +34,12 @@ export function Nav() {
     <>
       {/* desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-line bg-surface px-4 py-6 lg:flex">
-        <Link href="/" className="mb-8 px-2">
+        <Link href="/" className="mb-5 px-2">
           <Wordmark />
         </Link>
+        <div className="mb-4 px-1">
+          <CommandMenu variant="sidebar" />
+        </div>
         <nav className="space-y-0.5">
           {ITEMS.map((it) => (
             <Link

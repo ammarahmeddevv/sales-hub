@@ -123,6 +123,64 @@ export async function getActivity(prospects?: Prospect[]): Promise<Activity[]> {
   }));
 }
 
+export interface CalEvent {
+  date: string;
+  time: string;
+  title: string;
+  withWho: string;
+  link: string;
+  prospect: string;
+  prospectSlug: string | null;
+}
+
+export interface Comm {
+  date: string;
+  prospect: string;
+  prospectSlug: string | null;
+  direction: string;
+  channel: string;
+  subject: string;
+  summary: string;
+  link: string;
+}
+
+export async function getCalendar(prospects?: Prospect[]): Promise<CalEvent[]> {
+  const list = prospects ?? (await getProspects());
+  const rows = table(await readRange(TRACKER, "'Calendar'!A1:F200"), 0).filter(
+    (r) => r["Title"],
+  );
+  return rows
+    .map((r) => ({
+      date: r["Date"],
+      time: r["Time"],
+      title: r["Title"],
+      withWho: r["With"],
+      link: r["Link"],
+      prospect: r["Prospect"],
+      prospectSlug:
+        list.find((p) => r["Prospect"] && sameProspect(r["Prospect"], p.name))?.slug ?? null,
+    }))
+    .sort((a, b) => (a.date || "9999").localeCompare(b.date || "9999"));
+}
+
+export async function getComms(prospects?: Prospect[]): Promise<Comm[]> {
+  const list = prospects ?? (await getProspects());
+  const rows = table(await readRange(TRACKER, "'Comms'!A1:G500"), 0).filter(
+    (r) => r["Subject"] || r["Summary"],
+  );
+  return rows.map((r) => ({
+    date: r["Date"],
+    prospect: r["Prospect"],
+    prospectSlug:
+      list.find((p) => r["Prospect"] && sameProspect(r["Prospect"], p.name))?.slug ?? null,
+    direction: r["Direction"],
+    channel: r["Channel"],
+    subject: r["Subject"],
+    summary: r["Summary"],
+    link: r["Link"],
+  }));
+}
+
 // ---------------------------------------------------------------- leadflow
 
 export interface Lead {

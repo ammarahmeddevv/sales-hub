@@ -1,29 +1,39 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { Stage } from "@/lib/normalize";
 
-const STAGE_TONE: Record<Stage, "won" | "active" | "open" | "hold" | "lost"> = {
-  "Not contacted": "lost",
-  Contacted: "open",
-  "In discussion": "open",
-  "Demo done": "active",
-  "Proposal sent": "active",
-  Negotiating: "active",
+/* Each stage maps to a hue on the pipeline spectrum. */
+export const STAGE_HUE: Record<Stage, string> = {
+  "Not contacted": "notcontacted",
+  Contacted: "contacted",
+  "In discussion": "discussion",
+  "Demo done": "demo",
+  "Proposal sent": "proposal",
+  Negotiating: "negotiating",
   Won: "won",
   "On hold": "hold",
   Lost: "lost",
 };
 
+export function hueStyle(hue: string, strength = 15): CSSProperties {
+  return {
+    background: `color-mix(in oklab, var(--h-${hue}) ${strength}%, var(--surface))`,
+    color: `var(--h-${hue})`,
+  };
+}
+
 export function StageBadge({ stage, raw }: { stage: Stage; raw?: string }) {
   const showRaw = raw && raw.toLowerCase() !== stage.toLowerCase();
-  const tone = STAGE_TONE[stage];
   return (
     <span
       className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-[12px] font-medium"
-      style={{ background: `var(--st-${tone}-bg)`, color: `var(--st-${tone}-fg)` }}
+      style={hueStyle(STAGE_HUE[stage])}
       title={showRaw ? raw : undefined}
     >
-      <span className="size-1.5 rounded-full bg-current opacity-80" />
+      <span
+        className="size-1.5 rounded-full"
+        style={{ background: `var(--h-${STAGE_HUE[stage]})` }}
+      />
       {stage}
     </span>
   );
@@ -39,12 +49,18 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h1 className="text-[26px] font-semibold tracking-[-0.02em] text-ink">{title}</h1>
-        {sub && <p className="mt-1 text-[14px] text-ink-2">{sub}</p>}
+    <div className="relative mb-8">
+      <div
+        className="pointer-events-none absolute -inset-x-6 -top-8 -bottom-4 -z-10"
+        style={{ background: "var(--glow)" }}
+      />
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[27px] font-semibold tracking-[-0.025em] text-ink">{title}</h1>
+          {sub && <p className="mt-1.5 text-[14px] text-ink-2">{sub}</p>}
+        </div>
+        {action}
       </div>
-      {action}
     </div>
   );
 }
@@ -58,9 +74,9 @@ export function Card({
   className?: string;
   href?: string;
 }) {
-  const cls = `block rounded-2xl border border-line bg-surface ${className}`;
+  const cls = `card block rounded-2xl ${className}`;
   return href ? (
-    <Link href={href} className={`${cls} transition-colors hover:border-ink-3/50`}>
+    <Link href={href} className={`${cls} transition-[transform,border-color] hover:-translate-y-px hover:border-ink-3/40`}>
       {children}
     </Link>
   ) : (
@@ -72,15 +88,23 @@ export function Stat({
   label,
   value,
   hint,
+  hue,
 }: {
   label: string;
   value: ReactNode;
   hint?: ReactNode;
+  hue?: string;
 }) {
   return (
-    <div className="min-w-0 rounded-2xl border border-line bg-surface p-4 sm:p-5">
+    <div className="card min-w-0 overflow-hidden rounded-2xl p-4 sm:p-5">
+      {hue && (
+        <span
+          className="mb-3 block h-0.5 w-8 rounded-full"
+          style={{ background: `var(--h-${hue})` }}
+        />
+      )}
       <p className="text-[13px] text-ink-2">{label}</p>
-      <p className="mt-2 whitespace-nowrap font-mono text-[21px] leading-none tracking-tight text-ink tabular-nums sm:text-[28px]">
+      <p className="num mt-1.5 whitespace-nowrap font-mono text-[21px] leading-none text-ink sm:text-[27px]">
         {value}
       </p>
       {hint && <p className="mt-2 text-[12.5px] text-ink-3">{hint}</p>}
@@ -132,14 +156,28 @@ const CHANNEL_ICON: Record<string, string> = {
   email: "M3 6h18v12H3zM3 6l9 7 9-7",
 };
 
+const CHANNEL_HUE: Record<string, string> = {
+  whatsapp: "won",
+  phone: "contacted",
+  meet: "demo",
+  meeting: "demo",
+  build: "proposal",
+  deploy: "negotiating",
+  research: "notcontacted",
+  email: "discussion",
+};
+
 export function ChannelIcon({ channel }: { channel: string }) {
   const c = channel.toLowerCase();
   const key =
     Object.keys(CHANNEL_ICON).find((k) => c.includes(k)) ??
     (c.includes("person") ? "meeting" : "email");
   return (
-    <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink-2">
-      <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <span
+      className="flex size-8 shrink-0 items-center justify-center rounded-full"
+      style={hueStyle(CHANNEL_HUE[key], 18)}
+    >
+      <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d={CHANNEL_ICON[key]} />
       </svg>
     </span>

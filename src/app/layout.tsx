@@ -4,6 +4,7 @@ import "./globals.css";
 import { Nav } from "@/components/nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/wordmark";
+import { CommandMenu } from "@/components/command-menu";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -28,7 +29,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* mobile top bar */}
         <div className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-canvas/90 px-5 py-2.5 backdrop-blur lg:hidden">
           <Wordmark />
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <CommandMenu variant="bar" />
+            <ThemeToggle />
+          </div>
         </div>
         <main className="min-h-screen px-5 pb-28 pt-6 sm:px-8 lg:pb-12 lg:pl-[calc(15rem+2.5rem)] lg:pr-10 lg:pt-10">
           <div className="mx-auto max-w-6xl">{children}</div>

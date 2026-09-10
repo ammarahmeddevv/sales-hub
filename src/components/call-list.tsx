@@ -6,8 +6,8 @@ import { CopyButton } from "./copy-button";
 
 const PAGE = 20;
 
-export function CallList({ calls }: { calls: Call[] }) {
-  const [q, setQ] = useState("");
+export function CallList({ calls, initialQ = "" }: { calls: Call[]; initialQ?: string }) {
+  const [q, setQ] = useState(initialQ);
   const [show, setShow] = useState<"todo" | "done" | "all">("todo");
   const [limit, setLimit] = useState(PAGE);
 

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getActivity, getProspects, SHEET_URLS } from "@/lib/sheets";
+import { getActivity, getCalendar, getComms, getProspects, SHEET_URLS } from "@/lib/sheets";
 import { pkr, shortDate } from "@/lib/normalize";
 import { ActivityFeed } from "@/components/activity-feed";
+import { CommsList, UpcomingList } from "@/components/upcoming";
 import { Card, SectionTitle, StageBadge } from "@/components/ui";
 
 export const revalidate = 60;
@@ -33,7 +34,17 @@ export default async function ProspectPage({ params }: { params: Promise<{ slug:
   const prospects = await getProspects();
   const p = prospects.find((x) => x.slug === slug);
   if (!p) notFound();
-  const activity = (await getActivity(prospects)).filter((a) => a.prospectSlug === slug);
+  const [activityAll, calendarAll, commsAll] = await Promise.all([
+    getActivity(prospects),
+    getCalendar(prospects),
+    getComms(prospects),
+  ]);
+  const activity = activityAll.filter((a) => a.prospectSlug === slug);
+  const today = new Date().toISOString().slice(0, 10);
+  const scheduled = calendarAll.filter(
+    (e) => e.prospectSlug === slug && (!e.date || e.date >= today),
+  );
+  const comms = commsAll.filter((c) => c.prospectSlug === slug);
   const nums = phones(p.phoneEmail);
 
   return (
@@ -95,6 +106,18 @@ export default async function ProspectPage({ params }: { params: Promise<{ slug:
                 )}
               </div>
             )}
+          </Card>
+
+          {scheduled.length > 0 && (
+            <Card className="p-6">
+              <SectionTitle>Scheduled</SectionTitle>
+              <UpcomingList events={scheduled} showProspect={false} />
+            </Card>
+          )}
+
+          <Card className="p-6">
+            <SectionTitle>Emails &amp; messages</SectionTitle>
+            <CommsList comms={comms} />
           </Card>
 
           <Card className="p-6">

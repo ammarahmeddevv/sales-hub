@@ -32,8 +32,8 @@ function Select({
   );
 }
 
-export function LeadsTable({ leads }: { leads: Lead[] }) {
-  const [q, setQ] = useState("");
+export function LeadsTable({ leads, initialQ = "" }: { leads: Lead[]; initialQ?: string }) {
+  const [q, setQ] = useState(initialQ);
   const [country, setCountry] = useState("");
   const [type, setType] = useState("");
   const [open, setOpen] = useState<string | null>(null);
