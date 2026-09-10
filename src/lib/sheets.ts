@@ -18,12 +18,14 @@ export const SHEET_URLS = {
 async function readRange(spreadsheetId: string, range: string): Promise<string[][]> {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}?majorDimension=ROWS`;
   let lastError: unknown;
-  for (let attempt = 0; attempt < 6; attempt++) {
-    if (attempt) await new Promise((r) => setTimeout(r, Math.min(4000, 500 * 2 ** attempt)));
+  for (let attempt = 0; attempt < 4; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, Math.min(1500, 400 * 2 ** attempt)));
     try {
       const res = await fetch(url, {
         headers: { authorization: `Bearer ${await accessToken()}` },
         next: { revalidate: 60 },
+        // don't let one hung socket stall the whole page render
+        signal: AbortSignal.timeout(8000),
       });
       if (res.status === 429 || res.status >= 500) {
         lastError = new Error(`Sheets API ${res.status} reading ${range}`);

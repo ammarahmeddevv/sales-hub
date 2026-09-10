@@ -41,18 +41,27 @@ export function Nav() {
           <CommandMenu variant="sidebar" />
         </div>
         <nav className="space-y-0.5">
-          {ITEMS.map((it) => (
-            <Link
-              key={it.href}
-              href={it.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[14px] transition-colors ${
-                active(it.href) ? "bg-soft font-medium text-ink" : "text-ink-2 hover:bg-soft hover:text-ink"
-              }`}
-            >
-              <Icon d={it.d} />
-              {it.label}
-            </Link>
-          ))}
+          {ITEMS.map((it) => {
+            const on = active(it.href);
+            return (
+              <Link
+                key={it.href}
+                href={it.href}
+                aria-current={on ? "page" : undefined}
+                className={`relative flex items-center gap-3 rounded-lg px-3 py-2 text-[14px] transition-colors ${
+                  on
+                    ? "bg-accent-soft font-medium text-accent"
+                    : "text-ink-2 hover:bg-soft hover:text-ink"
+                }`}
+              >
+                {on && (
+                  <span className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-accent" aria-hidden />
+                )}
+                <Icon d={it.d} />
+                {it.label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="mt-auto flex items-center justify-between px-2 pt-4">
           <span className="text-[12px] text-ink-3">Theme</span>
