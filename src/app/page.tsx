@@ -3,7 +3,8 @@ import { getActivity, getCalendar, getFunnel, getProspects, safe } from "@/lib/s
 import { CLOSED, findDate, pkrShort, shortDate } from "@/lib/normalize";
 import { ActivityFeed } from "@/components/activity-feed";
 import { UpcomingList } from "@/components/upcoming";
-import { Card, ErrorState, PageHeader, SectionTitle, Stat, StageBadge } from "@/components/ui";
+import { CountUp } from "@/components/count-up";
+import { Avatar, Card, ErrorState, PageHeader, SectionTitle, Stat, StageBadge } from "@/components/ui";
 
 export const revalidate = 60;
 
@@ -57,16 +58,17 @@ export default async function Overview() {
         sub={<>Sales Tracker and LeadFlow, read live from Google Sheets · synced {synced}</>}
       />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat hue="contacted" label="Open deals" value={open.length} hint={`${prospects.length} prospects in total`} />
-        <Stat hue="won" label="Won" value={won.length} hint={won.length ? won.map((w) => w.name).join(", ") : "first win pending"} />
-        <Stat hue="proposal" label="Cold leads" value={f("qualified")} hint={`${f("called")} contacted · ${f("interested")} interested`} />
-        <Stat hue="demo" label="On call list" value={f("on call list") || f("qualified")} hint="ready to reach out to" />
+      <div className="rise grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Stat hue="contacted" label="Open deals" value={<CountUp value={open.length} />} hint={`${prospects.length} prospects in total`} />
+        <Stat hue="won" label="Won" value={<CountUp value={won.length} />} hint={won.length ? won.map((w) => w.name).join(", ") : "first win pending"} />
+        <Stat hue="proposal" label="Cold leads" value={<CountUp value={f("qualified")} format={(n) => n.toLocaleString("en-US")} />} hint={`${f("called")} contacted · ${f("interested")} interested`} />
+        <Stat hue="demo" label="On call list" value={<CountUp value={f("on call list") || f("qualified")} format={(n) => n.toLocaleString("en-US")} />} hint="ready to reach out to" />
       </div>
 
       <Link
         href="/money"
-        className="card mt-4 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl p-5 transition-[transform,border-color] hover:-translate-y-px hover:border-ink-3/40"
+        className="rise card mt-4 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl p-5 transition-[transform,border-color] hover:-translate-y-px hover:border-ink-3/40"
+        style={{ animationDelay: "60ms" }}
       >
         <span className="text-[13px] font-semibold text-ink">Money</span>
         <span className="text-[13px] text-ink-2">
@@ -81,7 +83,7 @@ export default async function Overview() {
         <span className="ml-auto text-[13px] text-accent">Details →</span>
       </Link>
 
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="rise mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]" style={{ animationDelay: "120ms" }}>
         <section className="min-w-0 space-y-8">
           <div>
             <SectionTitle action={<Link href="/pipeline" className="text-[13px] text-accent hover:underline">Pipeline</Link>}>
@@ -95,9 +97,12 @@ export default async function Overview() {
                 return (
                   <Card key={p.slug} href={`/prospects/${p.slug}`} className="p-5">
                     <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="truncate text-[15px] font-medium text-ink">{p.name}</p>
-                        <p className="mt-0.5 text-[13px] text-ink-3">{p.type}</p>
+                      <div className="flex min-w-0 items-start gap-3">
+                        <Avatar name={p.name} size={32} className="mt-0.5" />
+                        <div className="min-w-0">
+                          <p className="truncate text-[15px] font-medium text-ink">{p.name}</p>
+                          <p className="mt-0.5 text-[13px] text-ink-3">{p.type}</p>
+                        </div>
                       </div>
                       <StageBadge stage={p.stage} raw={p.stageRaw} />
                     </div>

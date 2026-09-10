@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getProspects, safe } from "@/lib/sheets";
 import { pkr } from "@/lib/normalize";
-import { Card, ErrorState, PageHeader, Stat, StageBadge, Empty } from "@/components/ui";
+import { CountUp } from "@/components/count-up";
+import { Avatar, Card, ErrorState, PageHeader, Stat, StageBadge, Empty } from "@/components/ui";
 
 export const revalidate = 60;
 export const metadata = { title: "Money" };
@@ -37,11 +38,12 @@ export default async function MoneyPage() {
         sub="What's agreed, what's in, and what's still owed. Add deal values in the tracker's new columns."
       />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat label="Collected" value={pkr(collected)} hint="received across all deals" />
-        <Stat label="Outstanding" value={pkr(outstanding)} hint="agreed but not yet paid" />
-        <Stat label="Open pipeline" value={pkr(pipeline)} hint="deal value of live deals" />
+      <div className="rise grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Stat hue="won" label="Collected" value={<CountUp value={collected} format={pkr} />} hint="received across all deals" />
+        <Stat hue="hold" label="Outstanding" value={<CountUp value={outstanding} format={pkr} />} hint="agreed but not yet paid" />
+        <Stat hue="discussion" label="Open pipeline" value={<CountUp value={pipeline} format={pkr} />} hint="deal value of live deals" />
         <Stat
+          hue="proposal"
           label="Win rate"
           value={winRate === null ? "—" : `${winRate}%`}
           hint={decided ? `${won.length} won · ${lost.length} lost` : "no closed deals yet"}
@@ -67,9 +69,12 @@ export default async function MoneyPage() {
                   className="block p-5 transition-colors hover:bg-soft/60"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-[15px] font-medium text-ink">{p.name}</p>
-                      <p className="mt-0.5 text-[13px] text-ink-3">{p.type}</p>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <Avatar name={p.name} size={32} className="mt-0.5" />
+                      <div className="min-w-0">
+                        <p className="text-[15px] font-medium text-ink">{p.name}</p>
+                        <p className="mt-0.5 text-[13px] text-ink-3">{p.type}</p>
+                      </div>
                     </div>
                     <StageBadge stage={p.stage} raw={p.stageRaw} />
                   </div>

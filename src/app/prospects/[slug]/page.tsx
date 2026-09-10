@@ -4,7 +4,7 @@ import { getActivity, getCalendar, getComms, getProspects, SHEET_URLS } from "@/
 import { pkr, shortDate } from "@/lib/normalize";
 import { ActivityFeed } from "@/components/activity-feed";
 import { CommsList, UpcomingList } from "@/components/upcoming";
-import { Card, SectionTitle, StageBadge } from "@/components/ui";
+import { Avatar, Card, SectionTitle, StageBadge, StageStepper } from "@/components/ui";
 
 export const revalidate = 60;
 
@@ -52,14 +52,21 @@ export default async function ProspectPage({ params }: { params: Promise<{ slug:
       <Link href="/pipeline" className="text-[13px] text-ink-3 hover:text-ink">
         ← Pipeline
       </Link>
-      <div className="mt-3 mb-8 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-[26px] font-semibold tracking-[-0.02em] text-ink">{p.name}</h1>
-          <p className="mt-1 text-[14px] text-ink-2">
-            {p.type} · {p.location}
-          </p>
+      <div className="mt-3 mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 items-start gap-3.5">
+          <Avatar name={p.name} size={44} className="mt-0.5" />
+          <div className="min-w-0">
+            <h1 className="text-[26px] font-semibold tracking-[-0.02em] text-ink">{p.name}</h1>
+            <p className="mt-1 text-[14px] text-ink-2">
+              {p.type} · {p.location}
+            </p>
+          </div>
         </div>
         <StageBadge stage={p.stage} raw={p.stageRaw} />
+      </div>
+
+      <div className="mb-8">
+        <StageStepper stage={p.stage} raw={p.stageRaw} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 [overflow-wrap:anywhere] lg:grid-cols-[minmax(0,1fr)_340px]">

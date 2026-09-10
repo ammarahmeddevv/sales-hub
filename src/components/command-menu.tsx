@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Avatar } from "./ui";
 
 type Item = { title: string; sub: string; href: string; extra?: string };
 type Index = { prospects: Item[]; leads: Item[]; calls: Item[]; activity: Item[] };
@@ -106,7 +107,7 @@ export function CommandMenu({ variant = "sidebar" }: { variant?: "sidebar" | "ba
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-surface"
+            className="pop-in w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-surface"
             style={{ boxShadow: "var(--shadow-pop)" }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -161,18 +162,37 @@ export function CommandMenu({ variant = "sidebar" }: { variant?: "sidebar" | "ba
                           type="button"
                           onMouseEnter={() => setCursor(i)}
                           onClick={() => go(r.item.href)}
-                          className={`flex w-full flex-col items-start gap-0.5 rounded-lg px-3 py-2 text-left ${
+                          className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left ${
                             i === cursor ? "bg-soft" : ""
                           }`}
                         >
-                          <span className="text-[13.5px] text-ink">{r.item.title}</span>
-                          <span className="text-[12px] text-ink-3">{r.item.sub}</span>
+                          <Avatar name={r.item.title} size={26} />
+                          <span className="flex min-w-0 flex-col gap-0.5">
+                            <span className="truncate text-[13.5px] text-ink">{r.item.title}</span>
+                            <span className="truncate text-[12px] text-ink-3">{r.item.sub}</span>
+                          </span>
                         </button>
                       );
                     })}
                   </div>
                 );
               })}
+            </div>
+
+            <div className="flex items-center gap-3 border-t border-line px-4 py-2 text-[11px] text-ink-3">
+              <span className="flex items-center gap-1">
+                <kbd className="rounded border border-line px-1 font-sans">↑</kbd>
+                <kbd className="rounded border border-line px-1 font-sans">↓</kbd>
+                move
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="rounded border border-line px-1 font-sans">↵</kbd>
+                open
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="rounded border border-line px-1 font-sans">esc</kbd>
+                close
+              </span>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { Fragment, useMemo, useState } from "react";
 import type { Lead } from "@/lib/sheets";
+import { Avatar } from "./ui";
 
 const PAGE = 60;
 
@@ -88,10 +89,15 @@ export function LeadsTable({ leads, initialQ = "" }: { leads: Lead[]; initialQ?:
                     className={`cursor-pointer border-b border-line last:border-0 hover:bg-soft/50 [&>td]:px-4 [&>td]:py-3 ${isOpen ? "bg-soft/50" : ""}`}
                   >
                     <td>
-                      <p className="font-medium text-ink">{l.business}</p>
-                      <p className="text-[12px] text-ink-3 sm:hidden">
-                        {l.type} · {l.city}
-                      </p>
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={l.business} size={26} />
+                        <div className="min-w-0">
+                          <p className="font-medium text-ink">{l.business}</p>
+                          <p className="text-[12px] text-ink-3 sm:hidden">
+                            {l.type} · {l.city}
+                          </p>
+                        </div>
+                      </div>
                     </td>
                     <td className="hidden capitalize text-ink-2 sm:table-cell">{l.type}</td>
                     <td className="hidden text-ink-2 md:table-cell">

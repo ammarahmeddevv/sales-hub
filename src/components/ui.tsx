@@ -22,6 +22,117 @@ export function hueStyle(hue: string, strength = 15): CSSProperties {
   };
 }
 
+/* ---- deterministic name avatar ---------------------------------- */
+const AVATAR_HUES = [
+  "contacted",
+  "discussion",
+  "demo",
+  "proposal",
+  "negotiating",
+  "won",
+  "hold",
+] as const;
+
+function hash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function initials(name: string): string {
+  const parts = name.replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+export function Avatar({
+  name,
+  size = 36,
+  className = "",
+}: {
+  name: string;
+  size?: number;
+  className?: string;
+}) {
+  const h = hash(name);
+  const a = AVATAR_HUES[h % AVATAR_HUES.length];
+  const b = AVATAR_HUES[(h >> 3) % AVATAR_HUES.length];
+  return (
+    <span
+      aria-hidden
+      className={`inline-flex shrink-0 items-center justify-center rounded-full font-medium text-white ${className}`}
+      style={{
+        width: size,
+        height: size,
+        fontSize: size * 0.36,
+        letterSpacing: "0.02em",
+        background: `linear-gradient(135deg, var(--h-${a}), var(--h-${b}))`,
+        boxShadow: "inset 0 0 0 1px rgba(255,255,255,.12)",
+      }}
+    >
+      {initials(name)}
+    </span>
+  );
+}
+
+/* ---- linear stage progress ------------------------------------- */
+const STEP_PATH: Stage[] = [
+  "Not contacted",
+  "Contacted",
+  "In discussion",
+  "Demo done",
+  "Proposal sent",
+  "Negotiating",
+  "Won",
+];
+
+export function StageStepper({ stage, raw }: { stage: Stage; raw?: string }) {
+  const aside = stage === "Lost" || stage === "On hold";
+  const currentIdx = aside
+    ? STEP_PATH.length - 1
+    : Math.max(0, STEP_PATH.indexOf(stage));
+
+  return (
+    <div>
+      <ol className="flex items-center gap-1.5">
+        {STEP_PATH.map((s, i) => {
+          const done = !aside && i < currentIdx;
+          const here = !aside && i === currentIdx;
+          const hue = STAGE_HUE[s];
+          return (
+            <li key={s} className="flex flex-1 items-center gap-1.5" title={s}>
+              <span
+                className="h-1.5 flex-1 rounded-full transition-colors"
+                style={{
+                  background:
+                    done || here
+                      ? `var(--h-${hue})`
+                      : "color-mix(in oklab, var(--ink-3) 22%, transparent)",
+                  opacity: aside ? 0.4 : done ? 0.55 : 1,
+                }}
+              />
+            </li>
+          );
+        })}
+      </ol>
+      <p className="mt-2 text-[12.5px] text-ink-3">
+        {aside ? (
+          <>
+            <span style={{ color: `var(--h-${STAGE_HUE[stage]})` }}>{stage}</span>
+            {raw && raw.toLowerCase() !== stage.toLowerCase() && <> · “{raw}”</>}
+          </>
+        ) : (
+          <>
+            Step {currentIdx + 1} of {STEP_PATH.length} ·{" "}
+            <span style={{ color: `var(--h-${STAGE_HUE[stage]})` }}>{stage}</span>
+          </>
+        )}
+      </p>
+    </div>
+  );
+}
+
 export function StageBadge({ stage, raw }: { stage: Stage; raw?: string }) {
   const showRaw = raw && raw.toLowerCase() !== stage.toLowerCase();
   return (

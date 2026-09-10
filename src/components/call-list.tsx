@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Call } from "@/lib/sheets";
 import { CopyButton } from "./copy-button";
+import { Avatar } from "./ui";
 
 const PAGE = 20;
 
@@ -61,11 +62,14 @@ export function CallList({ calls, initialQ = "" }: { calls: Call[]; initialQ?: s
           return (
             <article key={c.id} className="rounded-2xl border border-line bg-surface p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="text-[15px] font-medium text-ink">{c.business}</h3>
-                  <p className="mt-0.5 text-[13px] text-ink-3">
-                    {c.city} · <span className="font-mono">{c.phone}</span>
-                  </p>
+                <div className="flex min-w-0 items-start gap-3">
+                  <Avatar name={c.business} size={30} className="mt-0.5" />
+                  <div className="min-w-0">
+                    <h3 className="text-[15px] font-medium text-ink">{c.business}</h3>
+                    <p className="mt-0.5 text-[13px] text-ink-3">
+                      {c.city} · <span className="font-mono">{c.phone}</span>
+                    </p>
+                  </div>
                 </div>
                 <div className="text-right">
                   <p className="text-[13px] text-ink">{c.quote}</p>

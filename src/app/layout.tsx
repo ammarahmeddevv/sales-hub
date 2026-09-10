@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/nav";
@@ -13,6 +13,15 @@ export const metadata: Metadata = {
   title: { default: "Sales Hub", template: "%s · Sales Hub" },
   description: "Ammar Ahmed's prospects, activity and leads in one place.",
   robots: { index: false, follow: false, nocache: true },
+  applicationName: "Sales Hub",
+  appleWebApp: { capable: true, title: "Sales Hub", statusBarStyle: "black-translucent" },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf8f3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0e13" },
+  ],
 };
 
 // runs before first paint so the theme never flashes
